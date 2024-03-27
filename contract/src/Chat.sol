@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
+import {ENS} from "./ENS.sol";
 
 error ChatSystem__SenderNotEnsOwner();
 
@@ -38,8 +39,9 @@ contract ChatSystem {
         i_ensAddress = _ensAddress;
     }
 
-    function hasEns(string calldata _ensName) public returns (bool isUser) {
-        //carry Out the check to see to see
+    function hasEns(string calldata _ensName) public returns (bool) {
+        (address _owner, ) = ENS(i_ensAddress).getEnsDetails(_ensName);
+        _owner == msg.sender;
     }
 
     function _getConversationId(
