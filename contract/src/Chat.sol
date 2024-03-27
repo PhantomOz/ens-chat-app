@@ -17,7 +17,13 @@ contract ChatSystem {
     address private immutable i_ensAddress; //ensAddress
     mapping(string => mapping(string => uint256)) private s_ensToEnsCoversionId; //holds the Ids message a user;
     mapping(uint256 => Message[]) private s_conversationIdToMessages; //holds the messages for a conversation Id;
-    uint256 public conversationId = 1;
+    uint256 private conversationId = 1;
+
+    event MessageSent(
+        string indexed _author,
+        string indexed _receiver,
+        uint256 _messageId
+    );
 
     // The Message Data type
     struct Message {
@@ -68,5 +74,18 @@ contract ChatSystem {
         _messages.push(
             Message(_author, _receiver, _message, _imageUrl, _time.toString())
         );
+        emit MessageSent(_author, _receiver, _messages.length - 1);
+    }
+
+    function getMessages(
+        string calldata _author,
+        string calldata _receiver
+    ) external view returns (Message[] memory _messages) {
+        if (!hasEns(_author)) {
+            revert ChatSystem__SenderNotEnsOwner();
+        }
+        _messages = s_conversationIdToMessages[
+            _getConversationId(_author, _receiver)
+        ];
     }
 }
