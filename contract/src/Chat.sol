@@ -39,9 +39,9 @@ contract ChatSystem {
         i_ensAddress = _ensAddress;
     }
 
-    function hasEns(string calldata _ensName) public returns (bool) {
+    function hasEns(string calldata _ensName) public view returns (bool) {
         (address _owner, ) = ENS(i_ensAddress).getEnsDetails(_ensName);
-        _owner == msg.sender;
+        return _owner == msg.sender;
     }
 
     function _getConversationId(
@@ -91,3 +91,5 @@ contract ChatSystem {
         ];
     }
 }
+
+//0x838C60eD96A07Dd5ae6C31DAFd16568786B40001

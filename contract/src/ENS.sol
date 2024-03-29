@@ -32,10 +32,13 @@ contract ENS {
 
     function getEnsDetails(
         string calldata _ensName
-    ) external view returns (ENSDetails memory _ensdetails) {
+    ) external view returns (address _owner, string memory _imageURI) {
         if (s_ensToDetails[_ensName].owner == address(0)) {
             revert ENS__NameDoesNotExist();
         }
-        _ensdetails = s_ensToDetails[_ensName];
+        _owner = s_ensToDetails[_ensName].owner;
+        _imageURI = s_ensToDetails[_ensName].imageURI;
     }
 }
+
+//0x01E16d124f32859E006638f3c886Fd09C2BB5b9E
