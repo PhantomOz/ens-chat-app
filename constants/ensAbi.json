@@ -1,0 +1,55 @@
+[
+  {
+    "type": "function",
+    "name": "getEnsDetails",
+    "inputs": [
+      { "name": "_ensName", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [
+      { "name": "_owner", "type": "address", "internalType": "address" },
+      { "name": "_imageURI", "type": "string", "internalType": "string" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registerEnsName",
+    "inputs": [
+      { "name": "_ensName", "type": "string", "internalType": "string" },
+      { "name": "_imageURI", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "s_ensToDetails",
+    "inputs": [{ "name": "", "type": "string", "internalType": "string" }],
+    "outputs": [
+      { "name": "owner", "type": "address", "internalType": "address" },
+      { "name": "imageURI", "type": "string", "internalType": "string" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "ENSRegistered",
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "_ensName",
+        "type": "string",
+        "indexed": true,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  { "type": "error", "name": "ENS__NameAlreadyTaken", "inputs": [] },
+  { "type": "error", "name": "ENS__NameDoesNotExist", "inputs": [] }
+]

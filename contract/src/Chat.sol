@@ -19,6 +19,8 @@ contract ChatSystem {
     mapping(string => mapping(string => uint256)) private s_ensToEnsCoversionId; //holds the Ids message a user;
     mapping(uint256 => Message[]) private s_conversationIdToMessages; //holds the messages for a conversation Id;
     uint256 private conversationId = 1;
+    mapping(string => uint256[]) private s_addressToConversationIds;
+    mapping(uint256 => string[2]) private s_idToparicipants;
 
     event MessageSent(
         string indexed _author,
@@ -39,9 +41,12 @@ contract ChatSystem {
         i_ensAddress = _ensAddress;
     }
 
-    function hasEns(string calldata _ensName) public view returns (bool) {
+    function hasEns(
+        string calldata _ensName,
+        address _sender
+    ) public view returns (bool) {
         (address _owner, ) = ENS(i_ensAddress).getEnsDetails(_ensName);
-        return _owner == msg.sender;
+        return _owner == _sender;
     }
 
     function _getConversationId(
@@ -60,13 +65,16 @@ contract ChatSystem {
         string memory _message,
         string memory _imageUrl
     ) external {
-        if (!hasEns(_author)) {
+        if (!hasEns(_author, msg.sender)) {
             revert ChatSystem__SenderNotEnsOwner();
         }
         uint256 _time = block.timestamp;
 
         if (_getConversationId(_author, _receiver) <= 0) {
             s_ensToEnsCoversionId[_author][_receiver] = conversationId;
+            s_addressToConversationIds[_author].push(conversationId);
+            s_addressToConversationIds[_receiver].push(conversationId);
+            s_idToparicipants[conversationId] = [_author, _receiver];
             conversationId += 1;
         }
 
@@ -83,13 +91,22 @@ contract ChatSystem {
         string calldata _author,
         string calldata _receiver
     ) external view returns (Message[] memory _messages) {
-        if (!hasEns(_author)) {
-            revert ChatSystem__SenderNotEnsOwner();
-        }
         _messages = s_conversationIdToMessages[
             _getConversationId(_author, _receiver)
         ];
     }
+
+    function getUserConversationIds(
+        string calldata _ensName
+    ) external view returns (uint256[] memory) {
+        return s_addressToConversationIds[_ensName];
+    }
+
+    function getParicipant(
+        uint256 _id
+    ) external view returns (string[2] memory) {
+        return s_idToparicipants[_id];
+    }
 }
 
-//0x838C60eD96A07Dd5ae6C31DAFd16568786B40001
+//0x25c66802f4463A04F73eD49deE8DF05Ce05B2C67
